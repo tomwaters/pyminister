@@ -1,0 +1,22 @@
+$def with (page)
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>PiMinister</title>
+		<link rel="stylesheet" type="text/css" href="/static/style.css">
+		<script src="/static/jquery.min.js"></script>
+		<script src="/static/jquery-ui.min.js"></script>
+	</head>
+	
+	<body>
+		<div id="nav">
+			<ul id="navlist">
+				<li><a href="/">Home</a></li>
+				<li><a href="/device">Devices</a></li>
+			</ul>
+		</div>
+		<div id="content">
+			$:page
+		</div>
+	</body>
+</html>

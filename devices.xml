@@ -1,0 +1,12 @@
+<devices>
+	<device>
+		<name>RASPBMC</name>
+		<type>xbmc</type>
+		<connectionstring>url=http://192.168.0.51/jsonrpc</connectionstring>
+	</device>
+	<device>
+		<name>XBMC Laptop</name>
+		<type>xbmc</type>
+		<connectionstring>url=http://192.168.0.205/jsonrpc</connectionstring>
+	</device>	
+</devices>

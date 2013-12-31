@@ -1,0 +1,26 @@
+<style>
+</style>
+<script>
+	$$(document).ready(function() {
+		$$.ajax({
+			url: "/json/viewcommand",
+			type: "POST",
+			data: {
+				deviceid: deviceID,
+				command: "nowplaying"
+			}
+		})
+		.done(function(data) {
+			alert(data);
+		})
+		.fail(function() {
+			alert("Failed to get data. Please try again.");
+		});
+	});
+</script>
+
+<div id="xbmcplaying">
+
+</div>
+
+

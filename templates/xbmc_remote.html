@@ -1,0 +1,56 @@
+<style>
+	.rrow {
+		clear: both;
+	}
+	
+	.rrowmid {
+		padding-left: 60px;
+	}
+	
+	.rbutton {
+		border: solid 1px red;
+		border-radius: 4px;
+		width: 50px;
+		height: 30px;
+		padding: 2px;
+		margin: 2px;
+		cursor: pointer;
+		display: table;
+		float: left;
+	}
+</style>
+<script>
+	$$(document).ready(function() {
+		$$(".rbutton").on("click", function() {
+			$$.ajax({
+				url: "/json/viewcommand",
+				type: "POST",
+				data: {
+					deviceid: deviceID,
+					command: "remotecommand",
+					data: $$(this).data("rc")
+				}
+			})
+			.fail(function() {
+				alert("Failed to send command. Please try again.");
+			});
+		});
+	});
+</script>
+
+<div id="xbmcremote">
+	<div class="rrow rrowmid">
+		<div class="rbutton" data-rc="Up">^</div>
+	</div>
+	<div class="rrow">
+		<div class="rbutton" data-rc="Left">&lt;</div>
+		<div class="rbutton" data-rc="Select">OK</div>
+		<div class="rbutton" data-rc="Right">&gt;</div>
+	</div>
+	<div class="rrow rrowmid">
+		<div class="rbutton" data-rc="Down">v</div>
+		<div class="rbutton" data-rc="Back"><-</div>
+	</div>
+</div>
+
+
