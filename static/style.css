@@ -4,7 +4,7 @@ body{
 
 #nav{
 	float: left;
-	width: 140px;
+	width: 10%;
 }
 
 #navlist{
@@ -31,4 +31,38 @@ body{
 
 #content{
 	float: left;
+	width: 90%;
+}
+
+#devlist {
+	list-style-type: none;
+	padding: 0;
+	width: 80%;
+}
+
+#devlist li {
+	display: inline-block;
+	width: 100%;
+	padding: 4px;
+	border: solid 2px rgb(133,0,255);
+	border-radius: 8px;
+	margin-bottom:10px;
+}
+
+.devtitle {
+	float: left;
+}
+
+.devctl {
+	float: right;
+}
+
+.devctl img {
+	cursor: pointer;
+}
+
+.devctl .wait{
+	cursor: default;
+	height: 22px;
+	width: 22px;
 }

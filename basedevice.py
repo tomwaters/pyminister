@@ -1,6 +1,7 @@
 class BaseDevice(object):
-	def __init__(self, id, name, connectionString):
+	def __init__(self, id, type, name, connectionString):
 		self.id = id
+		self.type = type
 		self.name = name
 		self.conStr = connectionString
 		self.views = []

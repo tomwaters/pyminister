@@ -4,11 +4,14 @@ from devicemanager import devicemanager
 
 urls = (
     '/', 'index',
+		'/settings', 'settings',
 		'/device', 'device',
 		'/view', 'view',
+		'/about', 'about',
 		'/json/devices', 'devices',
 		'/json/views', 'views',
-		'/json/viewcommand', 'viewcommand'
+		'/json/viewcommand', 'viewcommand',
+		'/json/device', 'jsondevice'
 )
 
 t_globals = dict()
@@ -19,6 +22,10 @@ class index:
 	def GET(self):
 		return render.base("")
 
+class settings:
+	def GET(self):
+		return render.base(render.settings())
+		
 class device:
 	def GET(self):
 		return render.base(render.device())
@@ -32,8 +39,13 @@ class view:
 			view = web.template.frender('templates/' + i.viewid + '.html')
 			return view()
 
+class about:
+	def GET(self):
+		return render.base(render.about())
+
 class viewcommand:
 	def POST(self):
+		web.header('Content-Type', 'application/json')
 		i = web.input(deviceid=None, command=None, data=None)
 		r = devicemanager.viewcommand(i.deviceid, i.command, i.data)
 		if r == False:
@@ -56,6 +68,12 @@ class views:
 		else:
 			return views
 
+class jsondevice:
+	def DELETE(self):
+		inDict = dict(entry.split('=') for entry in web.data().split('&'))
+		deviceid = inDict['deviceid']
+		devicemanager.deletedevice(deviceid)
+				
 if __name__ == "__main__":
 		app = web.application(urls, globals())
 		app.internalerror = web.debugerror

@@ -4,8 +4,8 @@ import requests
 import json
 
 class Mod(BD):
-	def __init__(self, index, name, connectionString):
-		BD.__init__(self, index, name, connectionString)
+	def __init__(self, index, type, name, connectionString):
+		BD.__init__(self, index, type, name, connectionString)
 		self.views.append(View('xbmc_remote', 'Remote'))
 		self.views.append(View('xbmc_nowplaying', 'Now Playing'))
 		
@@ -30,7 +30,7 @@ class Mod(BD):
 		if type == 'video':
 			payload = {'request': '{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 }, "id": "VideoGetItem"}'}
 			r = requests.get(csDict['url'], params=payload)
-			result = r.json()['result']#json.loads(r.content)['result']
+			result = json.dumps(r.json()['result'])#json.loads(r.content)['result']
 			print result
 			return result
 		

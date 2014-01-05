@@ -1,26 +1,14 @@
-<style>
-</style>
+<script src="/static/xbmc.js"></script>
 <script>
 	$$(document).ready(function() {
-		$$.ajax({
-			url: "/json/viewcommand",
-			type: "POST",
-			data: {
-				deviceid: deviceID,
-				command: "nowplaying"
-			}
-		})
-		.done(function(data) {
-			alert(data);
-		})
-		.fail(function() {
-			alert("Failed to get data. Please try again.");
-		});
+		GetNowPlaying()
 	});
 </script>
 
 <div id="xbmcplaying">
-
+	<img id="npthumb" />
+	<h3 id="nptitle"></h2>
+	<div id="nptype"></div>
 </div>
 
 

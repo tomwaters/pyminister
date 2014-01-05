@@ -1,0 +1,45 @@
+			<script>
+				(function() {
+					getDevices();	
+				})();
+
+				function getDevices() {
+					$$.getJSON("/json/devices")
+					.done(function(data){
+						$$.each(data.devices, function(index, item){
+							title = "<div class='devtitle'>" + item.name + "</div>"
+							ctl = "<div class='devctl'><img src='/static/del.png' /></div>"
+							$$li = $$("<li>").val(item.id).html(title + ctl);
+							$$("#devlist").append($$li);
+						});
+						$$(".devctl img").on("click", delDeviceClick);
+					})
+					.fail(function() {
+						alert("Failed to load devices. Please try again.");
+					});
+				}
+				
+				function delDeviceClick() {
+					var deviceid = $$(this).closest("li").val();
+					$$dctl = $$(this).parent();
+					$$dctl.children().hide();
+					$$dctl.append("<img src='/static/wait.gif' class='wait' />");
+					$$.ajax({
+						url: "/json/device",
+						type: "DELETE",
+						data: {deviceid: deviceid, woo: "yay"}
+					})
+					.done(function() {
+						$$dctl.closest("li").remove();
+					})
+					.fail(function() {
+						$$dctl.children(".wait").remove();
+						$$dctl.children().show();
+						alert("Failed to delete device. Please try again.");
+					});
+				}
+			</script>
+			
+			<h2>Settings</h2>
+			<ul id="devlist"></ul>
+
