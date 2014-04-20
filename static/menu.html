@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta name="viewport" content="initial-scale=1.0;">
+		<title>Menu Demo</title>
+		<style>			
+			body {
+				font-family: Verdana;
+				margin: 0;
+			}
+			
+			#content {
+				display: inline-block;
+				vertical-align: top;
+				margin: 20px;
+			}
+			
+			nav {
+				background-color: cadetblue;
+			}
+			
+			.navmenu {
+				list-style-type: none;
+				padding-left: 0;
+				margin: 10px 0;
+			}
+						
+			.navmenu a {
+				background-color: grey;
+				text-decoration: none;
+				color: #fff;
+				padding: 4px;
+				display: block;
+			}
+			
+			.navmenu a:hover {
+				background-color: #fff;
+				color: grey;
+			}
+			
+			.navicon {
+				height: 26px;
+				width: 26px;
+				display: inline-block;
+				background-image: url('hicons.png');
+				vertical-align: middle;
+			}
+			
+			.navlabel {
+				vertical-align: middle;
+				padding: 0 6px;
+			}
+
+			#naviconhome {
+				background-position-x: -672px;
+				background-position-y: 0px;
+			}
+			
+			#naviconsettings {
+				background-position-x: 0px;
+				background-position-y: -47px;			
+			}
+			
+			/* mobile */
+			@media screen and (max-width:540px)
+			{
+				.navmenu {
+					text-align: center;
+					margin: 0;
+				}
+				.navmenu li {
+					display: inline-block;
+				}
+				.navlabel {
+					display: none;
+				}
+				#content {
+					display: inline-block;
+					vertical-align: top;
+				}
+			}
+			
+			/* desktop */
+			@media screen and (min-width:540px)
+			{
+				nav {
+					min-height: 200px;
+					display: inline-block;
+				}
+				.navmenu li {
+					margin-bottom: 10px;
+				}
+			}
+		</style>
+	</head>
+	
+	<body>
+		<nav>
+			<ul class="navmenu">
+				<li>
+					<a href="/" />
+						<div id="naviconhome" class="navicon"></div>
+						<span class="navlabel">Home</span>
+					</a>
+				</li>
+				<li>
+					<a href="/settings/" />
+						<div id="naviconsettings" class="navicon"></div>
+						<span class="navlabel">Settings</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div id="content">
+			Icons - <a href="http://happytodesign.com/hicons/">http://happytodesign.com/hicons/</a>
+		</div>
+	</body>
+</html>

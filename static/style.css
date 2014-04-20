@@ -1,16 +1,49 @@
-body{
+body, input, select {
 	font-family: verdana;
+}
+
+body { margin: 0}
+@media screen and (min-width:540px)
+{
+	#navmobile{ display: none; }
+	#nav { display: block; }
+}
+@media screen and (max-width:540px)
+{
+	#navmobile{ display: block; }
+	#nav{ display: none; }
+}
+
+#navmobile {
+	width: 100%;
+	background-color: rgb(197,216,235);
+}
+
+#navmobile_center{
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+}
+
+#navmobile img {
+	width: 32px;
+	height: 32px;
+	margin: 8px 10px;
+}
+
+intput, select {
+	font-size: 12pt;
 }
 
 #nav{
 	float: left;
-	width: 10%;
 }
 
 #navlist{
 	list-style-type: none;
 	padding: 0;
 	font-size: 14pt;
+	min-width: 100px;
 }
 
 #navlist li {
@@ -57,12 +90,22 @@ body{
 	float: right;
 }
 
-.devctl img {
+.devctl img {	
 	cursor: pointer;
+	height: 32px;
+	width: 32px;
 }
 
 .devctl .wait{
 	cursor: default;
 	height: 22px;
 	width: 22px;
+}
+
+.delicon {
+	content:url("/static/delete.png");
+}
+
+.editicon {
+	content:url("/static/settings.png");
 }

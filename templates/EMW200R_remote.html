@@ -1,12 +1,4 @@
 <style>
-	.rrow {
-		clear: both;
-	}
-	
-	.rrowmid {
-		padding-left: 60px;
-	}
-	
 	.rbutton {
 		border: solid 1px red;
 		border-radius: 4px;
@@ -22,6 +14,11 @@
 <script>
 	$(document).ready(function() {
 		$(".rbutton").on("click", function() {
+			var d = {};
+			d["set"] = $(this).closest(".socket").data("set");
+			d["socket"] = $(this).closest(".socket").data("socket");
+			d["command"] = $(this).data("rc");
+			
 			$.ajax({
 				url: "/json/viewcommand",
 				type: "POST",
@@ -29,7 +26,7 @@
 				data: {
 					deviceid: deviceID,
 					command: "remotecommand",
-					data: $(this).data("rc")
+					data: JSON.stringify(d)
 				}
 			})
 			.fail(function() {
@@ -39,18 +36,10 @@
 	});
 </script>
 
-<div id="xbmcremote">
-	<div class="rrow rrowmid">
-		<div class="rbutton" data-rc="Up">^</div>
-	</div>
-	<div class="rrow">
-		<div class="rbutton" data-rc="Left">&lt;</div>
-		<div class="rbutton" data-rc="Select">OK</div>
-		<div class="rbutton" data-rc="Right">&gt;</div>
-	</div>
-	<div class="rrow rrowmid">
-		<div class="rbutton" data-rc="Down">v</div>
-		<div class="rbutton" data-rc="Back"><-</div>
+<div id="EMW200Rremote">
+	<div class="socket" data-set="A" data-socket="1">
+		<div class="rbutton" data-rc="On">On</div>
+		<div class="rbutton" data-rc="Off">Off</div>
 	</div>
 </div>
 

@@ -1,10 +1,10 @@
 class BaseDevice(object):
 	def __init__(self, id, type, name, connectionString):
+		self.views = []
 		self.id = id
 		self.type = type
 		self.name = name
-		self.conStr = connectionString
-		self.views = []
+		self.conStr = connectionString or ""
 	
 	def getname(self):
 		return self.name
@@ -13,7 +13,7 @@ class BaseDevice(object):
 		return self.id
 
 	def getjson(self):
-		return '{"id":"' + str(self.id) + '", "name":"' + self.name + '"}'
+		return '{"type": "' + self.type + '", "id":"' + str(self.id) + '", "name":"' + self.name + '", "connectionstring": "' + self.conStr + '"}'
 
 	def getviewsjson(self):
 		json = '{"views":['

@@ -1,80 +1,101 @@
-import web
-import json
+from flask import Flask, request, render_template, make_response, abort
+#import json
 from devicemanager import devicemanager
 
-urls = (
-    '/', 'index',
-		'/settings', 'settings',
-		'/device', 'device',
-		'/view', 'view',
-		'/about', 'about',
-		'/json/devices', 'devices',
-		'/json/views', 'views',
-		'/json/viewcommand', 'viewcommand',
-		'/json/device', 'jsondevice'
-)
+app = Flask(__name__)
 
-t_globals = dict()
-render = web.template.render('templates/', globals=t_globals)
-render._keywords['globals']['render'] = render
+@app.route('/')
+def root():
+	return render_template("base.html")
 
-class index:
-	def GET(self):
-		return render.base("")
+@app.route('/device')
+def device():
+	return render_template("device.html")
+	
+@app.route('/settings')
+def settings():
+	return render_template("settings.html")
 
-class settings:
-	def GET(self):
-		return render.base(render.settings())
-		
-class device:
-	def GET(self):
-		return render.base(render.device())
+@app.route('/about')
+def about():
+	return render_template("about.html")
 
-class view:
-	def GET(self):
-		i = web.input(deviceid=None, viewdid=None)
-		if i.deviceid == None or views == "":
-			return web.notfound()
+@app.route('/view')
+def view():
+	viewid = request.args.get('viewid')
+	if viewid == None:
+		abort(404)
+	else:
+		return render_template(viewid + '.html')
+
+@app.route('/json/modules')
+def jsonmodules():
+	response = make_response(devicemanager.getmodules())
+	response.headers['Content-Type'] = 'application/json'
+	return response
+	
+@app.route('/json/devices', methods=['GET', 'POST'])
+def jsondevices():
+	if request.method == 'GET':
+		response = make_response(devicemanager.getdevices())
+	elif request.method == 'POST':
+		type = request.form['type']
+		name = request.form['name']
+		constring = request.form['constring']
+		response = make_response(devicemanager.adddevice(type, name, constring))
+
+	response.headers['Content-Type'] = 'application/json'
+	return response
+
+@app.route('/json/device', methods=['GET', 'DELETE'])
+def jsondevice():
+	if request.method == 'GET':
+		deviceid = request.args.get('deviceid')
+		res = devicemanager.getdevice(deviceid)
+		if res == False:
+			abort(404)
 		else:
-			view = web.template.frender('templates/' + i.viewid + '.html')
-			return view()
-
-class about:
-	def GET(self):
-		return render.base(render.about())
-
-class viewcommand:
-	def POST(self):
-		web.header('Content-Type', 'application/json')
-		i = web.input(deviceid=None, command=None, data=None)
-		r = devicemanager.viewcommand(i.deviceid, i.command, i.data)
-		if r == False:
-			return web.notfound()
-		else:
-			return r
-
-class devices:
-	def GET(self):
-		web.header('Content-Type', 'application/json')
-		return devicemanager.getdevicesjson()
-
-class views:
-	def GET(self):
-		i = web.input(deviceid=None)
-		web.header('Content-Type', 'application/json')
-		views = devicemanager.getviewsjson(str(i.deviceid))
-		if i.deviceid == None or views == "":
-			return web.notfound()
-		else:
-			return views
-
-class jsondevice:
-	def DELETE(self):
-		inDict = dict(entry.split('=') for entry in web.data().split('&'))
-		deviceid = inDict['deviceid']
+			response = make_response(res)
+			response.headers['Content-Type'] = 'application/json'
+			return response
+	elif request.method == 'DELETE':
+		deviceid = str(request.form['deviceid'])
 		devicemanager.deletedevice(deviceid)
-				
+		
+		
+# class jsondevice:
+	# def DELETE(self):
+		# inDict = dict(entry.split('=') for entry in web.data().split('&'))
+		# deviceid = inDict['deviceid']
+		# devicemanager.deletedevice(deviceid)
+		
+
+			
+@app.route('/json/views')
+def jsonviews():
+	deviceid = request.args.get('deviceid')
+	views = devicemanager.getviews(deviceid)
+	if deviceid == None or views == "":
+		abort(404)
+	else:
+		response = make_response(views)
+	response.headers['Content-Type'] = 'application/json'
+	return response
+
+@app.route('/json/viewcommand', methods=['POST'])
+def jsonviewcommand():
+	if request.method == 'POST':
+		deviceid = str(request.form['deviceid'])
+		command = request.form['command']
+		data = request.form['data']
+		r = devicemanager.viewcommand(deviceid, command, data)
+		if r == False:
+			abort(400)
+		else:
+			response = make_response(r)
+			response.headers['Content-Type'] = 'application/json'		
+			return response
+
 if __name__ == "__main__":
-		app = web.application(urls, globals())
-		app.internalerror = web.debugerror
-		app.run()
+		app.run(debug=True, host='0.0.0.0')
+	

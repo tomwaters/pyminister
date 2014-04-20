@@ -1,7 +1,9 @@
+import sys, os
 import xml.etree.ElementTree as ET
 
 class dm(object):
 	devices = {}
+	sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
 
 	def __init__(self):
 		self.readdevices()
@@ -36,8 +38,25 @@ class dm(object):
 	def deletedevice(self, deviceid):
 		del self.devices[deviceid]
 		self.writedevices()
-	
-	def getdevicesjson(self):
+
+	def adddevice(self, type, name, cstring):
+		c = getattr(__import__(type), "Mod")
+		index = len(self.devices) + 1
+		self.devices[str(index)] = c(str(index), type, name, cstring)
+		self.writedevices()
+		return self.devices[str(index)].getjson()
+		
+	def getmodules(self):
+		json = ''
+		for module in os.listdir('modules'):
+			if module.endswith('.py'):
+				if len(json) > 0:
+					json += ','
+				json += '{"name":"' + module[:-3] + '"}'
+		json = '{"modules":[' + json + ']}'
+		return json
+		
+	def getdevices(self):
 		json = '{"devices":['
 		for i in range(0, len(self.devices)):
 			if i > 0:
@@ -45,8 +64,15 @@ class dm(object):
 			json += self.devices.values()[i].getjson()
 		json = json + ']}'
 		return json
-		
-	def getviewsjson(self, deviceid):
+	
+	def getdevice(self, deviceid):
+		d = self.devices[deviceid]
+		if d:
+			return self.devices[deviceid].getjson()
+		else:
+			return False
+
+	def getviews(self, deviceid):
 		json = ""
 		d = self.devices[deviceid]
 		if d:
@@ -58,6 +84,6 @@ class dm(object):
 		if d:
 			return d.viewcommand(command, data)
 		else:
-			return false
+			return False
 
 devicemanager = dm()

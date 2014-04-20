@@ -1,97 +1,102 @@
-			<script>
-				(function() {
-					var deviceID;
-					var viewID;
-					getDevices();					
-				})();
-				
-				$$(document).ready(function() {		
-				});
-				
-				function getDevices() {
-					$$.getJSON("/json/devices")
-					.done(function(data){
-						$$.each(data.devices, function(index, item){
-							$$li = $$("<option>").val(item.id).text(item.name);
-							$$("#optdevices").append($$li);
-						});
-						
-						$$("#optdevices").off("change").on("change", deviceChanged);
-					})
-					.fail(function() {
-						alert("Failed to load devices. Please try again.");
-					});
-				}
-				
-				function deviceChanged() {
-					viewID = null;
-					$$("#viewcontent").empty();
-					
-					if($$("#optdevices").children("option:selected").index() ===  0) {
-						deviceID = null;
-						$$("#optviews").hide();
-						$$("#devtitle").text("");
-					} else {
-						$$sel = $$("#optdevices").children("option:selected");
-						deviceID = $$sel.val();
-						getViews(deviceID);
-						$$("#optviews").show();
-						$$("#devtitle").text($$sel.text());
-					}
-				}
-				
-				function getViews(deviceid) {
-					$$("#optviews").children().first().siblings().remove();
-					$$.getJSON("/json/views", {
-						deviceid: deviceid
-					})
-					.done(function(data){
-						$$.each(data.views, function(index, item){
-							$$li = $$("<option>").val(item.id).text(item.name);
-							$$("#optviews").append($$li);
-						});
-						
-						$$("#optviews").off("change").on("change", viewChanged);
-					})
-					.fail(function() {
-						alert("Failed to load views. Please try again.");
-					});					
-				}
-				
-				function viewChanged() {
-					if($$(this).children("option:selected").index() ===  0) {
-						$$("#viewcontent").empty();
-						viewID = null;
-					} else {
-						viewID = $$("#optviews").children("option:selected").val();
-						getView(deviceID, viewID);
-						$$("#viewcontent").show();
-					}
-				}
-				
-				function getView(deviceid, viewid) {
-					$$("#viewcontent").empty();
-					$$.ajax({
-						dataType: "html",
-						url: "/view",
-						data: {deviceid: deviceid, viewid: viewid}
-					})
-					.done(function(data){
-						$$("#viewcontent").html(data);
-					})
-					.fail(function() {
-						alert("Failed to load view. Please try again.");
-					});					
-				}
-			</script>
+{% extends "base.html" %}
+{% block head %}
+	<script>
+	$(document).ready(function() {
+		var deviceID;
+		var viewID;
+		$("#devicetitlelbl").text(res.DEVICES_TITLE);
+		$("#selectdev").text(res.DEVICES_DEVICE_SELECT);
+		$("#selectview").text(res.DEVICES_VIEW_SELECT);
+		getDevices();					
+	});
 
-			<select id="optdevices">
-				<option>Select a Device</option>
-			</select>
+	function getDevices() {
+		$.getJSON("/json/devices")
+		.done(function(data){
+			$.each(data.devices, function(index, item){
+				$li = $("<option>").val(item.id).text(item.name);
+				$("#optdevices").append($li);
+			});
 			
-			<select id="optviews" style="display:none;">
-				<option>Select a View</option>
-			</select>
+			$("#optdevices").off("change").on("change", deviceChanged);
+		})
+		.fail(function() {
+			alert(res.ERROR_DEVICES_GET);
+		});
+	}
 
-			<h2 id="devtitle"></h2>
-			<div id="viewcontent"></div>
+	function deviceChanged() {
+		viewID = null;
+		$("#viewcontent").empty();
+		
+		if($("#optdevices").children("option:selected").index() ===  0) {
+			deviceID = null;
+			$("#optviews").hide();
+			$("#devtitle").text("");
+		} else {
+			$sel = $("#optdevices").children("option:selected");
+			deviceID = $sel.val();
+			getViews(deviceID);
+			$("#optviews").show();
+			$("#devtitle").text($sel.text());
+		}
+	}
+
+	function getViews(deviceid) {
+		$("#optviews").children().first().siblings().remove();
+		$.getJSON("/json/views", {
+			deviceid: deviceid
+		})
+		.done(function(data){
+			$.each(data.views, function(index, item){
+				$li = $("<option>").val(item.id).text(item.name);
+				$("#optviews").append($li);
+			});
+			
+			$("#optviews").off("change").on("change", viewChanged);
+		})
+		.fail(function() {
+			alert(res.ERROR_VIEWS_GET);
+		});					
+	}
+
+	function viewChanged() {
+		if($(this).children("option:selected").index() ===  0) {
+			$("#viewcontent").empty();
+			viewID = null;
+		} else {
+			viewID = $("#optviews").children("option:selected").val();
+			getView(deviceID, viewID);
+			$("#viewcontent").show();
+		}
+	}
+
+	function getView(deviceid, viewid) {
+		$("#viewcontent").empty();
+		$.ajax({
+			dataType: "html",
+			url: "/view",
+			data: {deviceid: deviceid, viewid: viewid}
+		})
+		.done(function(data){
+			$("#viewcontent").html(data);
+		})
+		.fail(function() {
+			alert(res.ERROR_VIEW_GET);
+		});					
+	}
+	</script>
+{% endblock %}
+{% block body %}
+	<h2 id="devicetitlelbl"></h2>
+	<select id="optdevices">
+		<option id="selectdev"></option>
+	</select>
+	
+	<select id="optviews" style="display:none;">
+		<option id="selectview"></option>
+	</select>
+
+	<h2 id="devtitle"></h2>
+	<div id="viewcontent"></div>
+{% endblock %}

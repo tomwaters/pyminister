@@ -1,24 +1,42 @@
-$def with (page)
 <!DOCTYPE HTML>
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 		<title>PyMinister</title>
 		<link rel="stylesheet" type="text/css" href="/static/style.css">
+		<link rel="stylesheet" href="/static/jquery-ui.css">
 		<script src="/static/jquery.min.js"></script>
 		<script src="/static/jquery-ui.min.js"></script>
+		<script src="/static/strings.js"></script>
+		<script>
+			$(document).ready(function() {
+				$("#mnuhome").text(res.MENU_HOME);
+				$("#mnudevices").text(res.MENU_DEVICES);
+				$("#menusettings").text(res.MENU_SETTINGS);
+				$("#menuabout").text(res.MENU_ABOUT);
+			});
+			</script>
+		{% block head %}{% endblock %}
 	</head>
 	
 	<body>
 		<div id="nav">
 			<ul id="navlist">
-				<li><a href="/">Home</a></li>
-				<li><a href="/device">Devices</a></li>
-				<li><a href="/settings">Settings</a></li>
-				<li><a href="/about">About</a></li>
+				<li><a id="mnuhome" href="/"></a></li>
+				<li><a id="mnudevices" href="/device"></a></li>
+				<li><a id="menusettings" href="/settings"></a></li>
+				<li><a id="menuabout" href="/about"></a></li>
 			</ul>
 		</div>
+		<div id="navmobile">
+			<div id="navmobile_center">
+				<a href="/device"><img src="/static/remote.png" /></a>
+				<a href="/settings"><img src="/static/settings.png" /></a>
+				<a href="/about"><img src="/static/about.png" /></a>
+			</div>
+		</div>
 		<div id="content">
-			$:page
+			{% block body %}{% endblock %}
 		</div>
 	</body>
 </html>

@@ -1,45 +1,171 @@
-			<script>
-				(function() {
-					getDevices();	
-				})();
+{% extends "base.html" %}
 
-				function getDevices() {
-					$$.getJSON("/json/devices")
-					.done(function(data){
-						$$.each(data.devices, function(index, item){
-							title = "<div class='devtitle'>" + item.name + "</div>"
-							ctl = "<div class='devctl'><img src='/static/del.png' /></div>"
-							$$li = $$("<li>").val(item.id).html(title + ctl);
-							$$("#devlist").append($$li);
-						});
-						$$(".devctl img").on("click", delDeviceClick);
-					})
-					.fail(function() {
-						alert("Failed to load devices. Please try again.");
-					});
-				}
-				
-				function delDeviceClick() {
-					var deviceid = $$(this).closest("li").val();
-					$$dctl = $$(this).parent();
-					$$dctl.children().hide();
-					$$dctl.append("<img src='/static/wait.gif' class='wait' />");
-					$$.ajax({
-						url: "/json/device",
-						type: "DELETE",
-						data: {deviceid: deviceid, woo: "yay"}
-					})
-					.done(function() {
-						$$dctl.closest("li").remove();
-					})
-					.fail(function() {
-						$$dctl.children(".wait").remove();
-						$$dctl.children().show();
-						alert("Failed to delete device. Please try again.");
-					});
-				}
-			</script>
+{% block head %}
+<script>
+$(document).ready(function() {
+	$("#settingstitlelbl").text(res.SETTINGS_TITLE);
+	$("#settingsadddevlbl").text(res.SETTINGS_DEVICE_ADD);
+	$("#selectdev").text(res.SETTINGS_DEVICE_SELECT);
+	$("#dlgname").text(res.SETTINGS_DLG_NAME);
+	getModules();
+	getDevices();
+});
+
+function getModules() {
+	$.getJSON("/json/modules")
+	.done(function(data){
+		$.each(data.modules, function(index, item){
+			$li = $("<option>").val(item.name).text(item.name);
+			$("#modulelist").append($li);
+		});
+	})
+	.fail(function() {
+		alert(res.ERROR_MODULES_GET);
+	});
+}
+
+function getDevices() {
+	$.getJSON("/json/devices")
+	.done(function(data){
+		$("#devlist").empty();
+		$.each(data.devices, function(index, item){
+			listDevice(item.type, item.id, item.name);
+		});
+		$(".devctldel").off("click").on("click", delDeviceClick);
+		$(".devctledit").off("click").on("click", editDeviceClick);
+	})
+	.fail(function() {
+		alert(res.ERROR_DEVICES_GET);
+	});
+}
+
+function listDevice(type, id, name) {
+	var title = "<div class='devtitle'>" + name + "</div>";
+	var ctl = "<div class='devctl'><img class='devctledit editicon' /><img class='devctldel delicon' /></div>";
+	$("<li>").val(id).html(title + ctl).data("type", type).appendTo("#devlist");
+}
+
+function addDeviceClick() {
+	if($("#modulelist").children("option:selected").index() >  0) {
+		addeditDevice($("#modulelist").children("option:selected").val());
+	}
+}
+
+function editDeviceClick() {
+	$.getJSON("/json/device", {
+		deviceid: $(this).closest("li").val()
+	})
+	.done(function(data){
+		addeditDevice(data.type, data.name, data.connectionstring);
+	})
+	.fail(function() {
+		alert(res.ERROR_DEVICE_GET);
+	});
+}
+
+function delDeviceClick() {
+	if(confirm(res.DEVICE_DELETE_CONFIRM)) {
+		var deviceid = $(this).closest("li").val();
+		$dctl = $(this).parent();
+		$dctl.children().hide();
+		$dctl.append("<img src='/static/wait.gif' class='wait' />");
+		$.ajax({
+			url: "/json/device",
+			type: "DELETE",
+			data: {deviceid: deviceid}
+		})
+		.done(function() {
+			$dctl.closest("li").remove();
+		})
+		.fail(function() {
+			$dctl.children(".wait").remove();
+			$dctl.children().show();
+			alert(RES.ERROR_DEVICE_DELETE);
+		});
+	}
+}
 			
-			<h2>Settings</h2>
-			<ul id="devlist"></ul>
+function addeditDevice(type, name, connectionstring) {
+	$("#dlg_devname").val("");
+	$("#dlg_cs").empty();
+	
+	var view = type + "_addedit";
+	
+	// Get the add/edit view for this device type
+	$.ajax({
+		dataType: "html",
+		url: "/view",
+		data: {deviceid: "-1", viewid: view}
+	})
+	.done(function(data){
+		$("#dlg_devtype").val(type);
+		$("#dlg_cs").html(data);
+		
+		var title = ""
+		if(name) {
+			title = res.SETTINGS_DLG_EDIT + name;
+			$("#dlg_devname").val(name);
+			// Populate edit view
+		} else {
+			title = res.SETTINGS_DLG_ADD + type + res.SETTINGS_DLG_ADDDEV;
+		}
+		
+		$("#dialog-modal").dialog({
+			title: title,
+			modal: true,
+			buttons: {
+				OK: addeditOK,
+				Cancel: function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	})
+	.fail(function() {
+		alert(res.ERROR_VIEW_GET);
+	});
+}
 
+function addeditOK() {
+	var type = $("#dlg_devtype").val();
+	var name = $("#dlg_devname").val();
+	
+	// build  up connection string
+	var cstring = "";
+	$.each($("#dlg_cs").find("input"), function(index, item) {
+		cstring += $(item).data("key") + "=" + $(item).val() + ";";
+	});
+		
+	$.ajax({
+		url: "/json/devices",
+		type: "POST",
+		data: {type: type, name: name, constring: cstring}
+	})
+	.done(function(data) {
+		getDevices();
+		$("#dialog-modal").dialog("close");
+	})
+	.fail(function() {
+		alert(res.ERROR_DEVICE_UPDATE);
+	});
+}
+</script>
+{% endblock %}
+{% block body %}
+	<h2 id="settingstitlelbl"></h2>
+	<div>
+		<span id="adddevlbl"></span>
+		<select id="modulelist">
+			<option id="selectdev"></option>
+		</select>
+		<input type="button" value="Add" onClick="addDeviceClick()" />
+	</div>
+	
+	<ul id="devlist"></ul>
+	<div id="dialog-modal" style="display: none;">
+		<input type="hidden" id="dlg_devtype" />
+		<span id="dlgname"></span><br />
+		<input type="text" id="dlg_devname" />
+		<div id="dlg_cs"></div>
+	</div>
+{% endblock %}
