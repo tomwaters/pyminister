@@ -84,6 +84,7 @@ intput, select {
 
 .devtitle {
 	float: left;
+	line-height: 32px;
 }
 
 .devctl {

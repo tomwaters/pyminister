@@ -14,19 +14,19 @@
 <script>
 	$(document).ready(function() {
 		$(".rbutton").on("click", function() {
-			var d = {};
-			d["set"] = $(this).closest(".socket").data("set");
-			d["socket"] = $(this).closest(".socket").data("socket");
-			d["command"] = $(this).data("rc");
-			
+			if($(this).data("rc") == "On")
+				command = "remoteon"
+			else if($(this).data("rc") == "Off")
+				command = "remoteoff"
+				
 			$.ajax({
 				url: "/json/viewcommand",
 				type: "POST",
 				dataType: 'text',
 				data: {
 					deviceid: deviceID,
-					command: "remotecommand",
-					data: JSON.stringify(d)
+					command: command,
+					data: ''
 				}
 			})
 			.fail(function() {
@@ -37,7 +37,7 @@
 </script>
 
 <div id="EMW200Rremote">
-	<div class="socket" data-set="A" data-socket="1">
+	<div class="socket">
 		<div class="rbutton" data-rc="On">On</div>
 		<div class="rbutton" data-rc="Off">Off</div>
 	</div>

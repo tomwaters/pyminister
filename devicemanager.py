@@ -35,17 +35,31 @@ class dm(object):
 		tree = ET.ElementTree(ds)
 		tree.write('devices.xml')
 		
-	def deletedevice(self, deviceid):
-		del self.devices[deviceid]
-		self.writedevices()
-
 	def adddevice(self, type, name, cstring):
 		c = getattr(__import__(type), "Mod")
 		index = len(self.devices) + 1
 		self.devices[str(index)] = c(str(index), type, name, cstring)
 		self.writedevices()
 		return self.devices[str(index)].getjson()
+	
+	def editdevice(self, deviceid, name, cstring):
+		d = self.devices[devicesid]
+		if d:
+			self.devices[str(index)].edit(name, cstring)
+			self.writedevices()
+			return self.devices[str(index)].getjson()
+		else:
+			return False
 		
+	def deletedevice(self, deviceid):
+		d = self.devices[deviceid]
+		if d:
+			self.devices.pop(deviceid)
+			self.writedevices()
+			return "{}"
+		else:
+			return False
+
 	def getmodules(self):
 		json = ''
 		for module in os.listdir('modules'):
@@ -68,7 +82,7 @@ class dm(object):
 	def getdevice(self, deviceid):
 		d = self.devices[deviceid]
 		if d:
-			return self.devices[deviceid].getjson()
+			return d.getjsonfull()
 		else:
 			return False
 
@@ -82,7 +96,7 @@ class dm(object):
 	def viewcommand(self, deviceid, command, data):
 		d = self.devices[deviceid]
 		if d:
-			return d.viewcommand(command, data)
+			return d.viewcommand(command, data) or "{}"
 		else:
 			return False
 

@@ -47,16 +47,18 @@ function listDevice(type, id, name) {
 
 function addDeviceClick() {
 	if($("#modulelist").children("option:selected").index() >  0) {
-		addeditDevice($("#modulelist").children("option:selected").val());
+		var type = $("#modulelist").children("option:selected").val();
+		var title = res.SETTINGS_DLG_ADD + type + res.SETTINGS_DLG_ADDDEV;
+		addeditDevice(title, type);
 	}
 }
 
 function editDeviceClick() {
-	$.getJSON("/json/device", {
-		deviceid: $(this).closest("li").val()
-	})
+	var url = "/json/devices/" + $(this).closest("li").val();
+	$.getJSON(url)
 	.done(function(data){
-		addeditDevice(data.type, data.name, data.connectionstring);
+		var title = res.SETTINGS_DLG_EDIT + data.name;
+		addeditDevice(title, data.type, data.name, data.connectionstring);
 	})
 	.fail(function() {
 		alert(res.ERROR_DEVICE_GET);
@@ -65,14 +67,13 @@ function editDeviceClick() {
 
 function delDeviceClick() {
 	if(confirm(res.DEVICE_DELETE_CONFIRM)) {
-		var deviceid = $(this).closest("li").val();
 		$dctl = $(this).parent();
 		$dctl.children().hide();
 		$dctl.append("<img src='/static/wait.gif' class='wait' />");
+		var url = "/json/devices/" + $(this).closest("li").val();
 		$.ajax({
-			url: "/json/device",
-			type: "DELETE",
-			data: {deviceid: deviceid}
+			url: url,
+			type: "DELETE"
 		})
 		.done(function() {
 			$dctl.closest("li").remove();
@@ -80,18 +81,17 @@ function delDeviceClick() {
 		.fail(function() {
 			$dctl.children(".wait").remove();
 			$dctl.children().show();
-			alert(RES.ERROR_DEVICE_DELETE);
+			alert(res.ERROR_DEVICE_DELETE);
 		});
 	}
 }
-			
-function addeditDevice(type, name, connectionstring) {
+
+function addeditDevice(title, type, name, connectionstring) {
 	$("#dlg_devname").val("");
 	$("#dlg_cs").empty();
 	
-	var view = type + "_addedit";
-	
 	// Get the add/edit view for this device type
+	var view = type + "_addedit";
 	$.ajax({
 		dataType: "html",
 		url: "/view",
@@ -100,14 +100,17 @@ function addeditDevice(type, name, connectionstring) {
 	.done(function(data){
 		$("#dlg_devtype").val(type);
 		$("#dlg_cs").html(data);
-		
-		var title = ""
-		if(name) {
-			title = res.SETTINGS_DLG_EDIT + name;
+		if(name)
 			$("#dlg_devname").val(name);
-			// Populate edit view
-		} else {
-			title = res.SETTINGS_DLG_ADD + type + res.SETTINGS_DLG_ADDDEV;
+			
+		if(connectionstring) {
+			// Populate edit view from connection string
+			$.each(connectionstring.split(";"), function(index, value) {
+				if(value.length > 0) {
+					var keyval = value.split("=");
+					$("#dlg_cs").find("input[data-key='" + keyval[0] + "'],select[data-key='" + keyval[0] + "']").val(keyval[1]);
+				}
+			});
 		}
 		
 		$("#dialog-modal").dialog({
@@ -132,8 +135,10 @@ function addeditOK() {
 	
 	// build  up connection string
 	var cstring = "";
-	$.each($("#dlg_cs").find("input"), function(index, item) {
-		cstring += $(item).data("key") + "=" + $(item).val() + ";";
+	$.each($("#dlg_cs").find("input,select"), function(index, item) {
+		if(index > 0)
+			cstring += ";"
+		cstring += $(item).data("key") + "=" + $(item).val();
 	});
 		
 	$.ajax({

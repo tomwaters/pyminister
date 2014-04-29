@@ -13,21 +13,23 @@ class Mod(BD):
 		self.one = "0111"
 		self.two = "1011"
 		self.three = "1101"
-		self.four = "1110"
+		# self.four = "1110"
 		self.pone = "10001110"
 		self.pzero = "10001000"
 		self.GPIOPin = 11
 
 	def viewcommand(self, command, data):
-		if command == 'remotecommand':
-			return self.sendcommand(data)
+		if command == 'remoteon':
+			return self.transmit('On')
+		elif command == 'remoteoff':
+			return self.transmit('Off')
 
-	def sendcommand(self, data):
-		d = json.loads(data)
-		self.transmit(d['set'], d['socket'], d['command'])
-		return ""
-
-	def transmit(self, set, socket, command):	
+	def transmit(self, command):
+		print self.conStr
+		csDict = dict(entry.split('=') for entry in self.conStr.split(';'))
+		set = csDict['set']
+		socket = csDict['socket']
+		
 		# Build up the sequence to send
 		seq = ""
 		if set == "A":
@@ -39,22 +41,17 @@ class Mod(BD):
 		elif set == "D":
 			seq += self.getsequence(self.four)
 			
-		if socket == 1:
+		if socket == "1":
 			seq += self.getsequence(self.one)
-		elif socket == 2:
+		elif socket == "2":
 			seq += self.getsequence(self.two)
-		elif socket == 3:
+		elif socket == "3":
 			seq += self.getsequence(self.three)
-		elif socket == 4:
-			seq += self.getsequence(self.four)		
 			
 		if command == "On":
 			seq += self.getsequence(self.on)
 		elif command == "Off":
 			seq += self.getsequence(self.off)
-		
-		print command
-		print seq
 		
 		GPIO.setmode(GPIO.BOARD)
 		#GPIO.setwarnings(False)

@@ -43,34 +43,34 @@ def jsondevices():
 		name = request.form['name']
 		constring = request.form['constring']
 		response = make_response(devicemanager.adddevice(type, name, constring))
-
 	response.headers['Content-Type'] = 'application/json'
 	return response
 
-@app.route('/json/device', methods=['GET', 'DELETE'])
-def jsondevice():
+@app.route('/json/devices/<string:deviceid>', methods=['GET', 'PUT', 'DELETE'])
+def jsondevice(deviceid):
 	if request.method == 'GET':
-		deviceid = request.args.get('deviceid')
 		res = devicemanager.getdevice(deviceid)
 		if res == False:
 			abort(404)
 		else:
 			response = make_response(res)
-			response.headers['Content-Type'] = 'application/json'
-			return response
+	elif request.method == 'PUT':
+		name = request.form['name']
+		constring = request.form['constring']
+		res = devicemanager.editdevice(deviceid, name, constring)
+		if res == False:
+			abort(404)
+		else:
+			response = make_response(res)
 	elif request.method == 'DELETE':
-		deviceid = str(request.form['deviceid'])
-		devicemanager.deletedevice(deviceid)
-		
-		
-# class jsondevice:
-	# def DELETE(self):
-		# inDict = dict(entry.split('=') for entry in web.data().split('&'))
-		# deviceid = inDict['deviceid']
-		# devicemanager.deletedevice(deviceid)
-		
-
-			
+		res = devicemanager.deletedevice(deviceid)
+		if res == False:
+			abort(404)
+		else:
+			response = make_response(res)
+	response.headers['Content-Type'] = 'application/json'
+	return response
+	
 @app.route('/json/views')
 def jsonviews():
 	deviceid = request.args.get('deviceid')
@@ -90,7 +90,7 @@ def jsonviewcommand():
 		data = request.form['data']
 		r = devicemanager.viewcommand(deviceid, command, data)
 		if r == False:
-			abort(400)
+			abort(404)
 		else:
 			response = make_response(r)
 			response.headers['Content-Type'] = 'application/json'		
