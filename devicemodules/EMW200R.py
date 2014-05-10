@@ -8,6 +8,8 @@ class Mod(BD):
 	def __init__(self, index, type, name, connectionString):
 		BD.__init__(self, index, type, name, connectionString)
 		self.views.append(View('EMW200R_remote', 'Remote'))
+		self.actions.append("Turn On");
+		self.actions.append("Turn Off");
 		self.on = "1111"
 		self.off = "1110"
 		self.one = "0111"
@@ -18,10 +20,10 @@ class Mod(BD):
 		self.pzero = "10001000"
 		self.GPIOPin = 11
 
-	def viewcommand(self, command, data):
-		if command == 'remoteon':
+	def action(self, command, data):
+		if command == 'Turn On':
 			return self.transmit('On')
-		elif command == 'remoteoff':
+		elif command == 'Turn Off':
 			return self.transmit('Off')
 
 	def transmit(self, command):

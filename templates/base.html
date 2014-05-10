@@ -10,9 +10,9 @@
 		<script src="/static/strings.js"></script>
 		<script>
 			$(document).ready(function() {
-				$("#mnuhome").text(res.MENU_HOME);
+				$("#mnuremote").text(res.MENU_REMOTE);
+				$("#mnuevents").text(res.MENU_EVENTS);
 				$("#mnudevices").text(res.MENU_DEVICES);
-				$("#menusettings").text(res.MENU_SETTINGS);
 				$("#menuabout").text(res.MENU_ABOUT);
 			});
 			</script>
@@ -22,15 +22,16 @@
 	<body>
 		<div id="nav">
 			<ul id="navlist">
-				<li><a id="mnuhome" href="/"></a></li>
-				<li><a id="mnudevices" href="/device"></a></li>
-				<li><a id="menusettings" href="/settings"></a></li>
+				<li><a id="mnuremote" href="/"></a></li>
+				<li><a id="mnuevents" href="/events"></a></li>
+				<li><a id="mnudevices" href="/devices"></a></li>
 				<li><a id="menuabout" href="/about"></a></li>
 			</ul>
 		</div>
 		<div id="navmobile">
 			<div id="navmobile_center">
-				<a href="/device"><img src="/static/remote.png" /></a>
+				<a href="/remote"><img src="/static/remote.png" /></a>
+				<a href="/events"><img src="/static/settings.png" /></a>
 				<a href="/settings"><img src="/static/settings.png" /></a>
 				<a href="/about"><img src="/static/about.png" /></a>
 			</div>

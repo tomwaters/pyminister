@@ -5,16 +5,17 @@ from devicemanager import devicemanager
 app = Flask(__name__)
 
 @app.route('/')
-def root():
-	return render_template("base.html")
-
-@app.route('/device')
-def device():
-	return render_template("device.html")
+@app.route('/remote')
+def remote():
+	return render_template("remote.html")
 	
-@app.route('/settings')
-def settings():
-	return render_template("settings.html")
+@app.route('/events')
+def events():
+	return render_template("events.html")	
+	
+@app.route('/devices')
+def devices():
+	return render_template("devices.html")
 
 @app.route('/about')
 def about():

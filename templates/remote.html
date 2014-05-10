@@ -4,9 +4,9 @@
 	$(document).ready(function() {
 		var deviceID;
 		var viewID;
-		$("#devicetitlelbl").text(res.DEVICES_TITLE);
-		$("#selectdev").text(res.DEVICES_DEVICE_SELECT);
-		$("#selectview").text(res.DEVICES_VIEW_SELECT);
+		$("#remotetitlelbl").text(res.REMOTE_TITLE);
+		$("#selectdev").text(res.REMOTE_DEVICE_SELECT);
+		$("#selectview").text(res.REMOTE_VIEW_SELECT);
 		getDevices();					
 	});
 
@@ -88,7 +88,7 @@
 	</script>
 {% endblock %}
 {% block body %}
-	<h2 id="devicetitlelbl"></h2>
+	<h2 id="remotetitlelbl"></h2>
 	<select id="optdevices">
 		<option id="selectdev"></option>
 	</select>

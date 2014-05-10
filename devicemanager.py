@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 class dm(object):
 	devices = {}
-	sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
+	sys.path.append(os.path.join(os.path.dirname(__file__), 'devicemodules'))
 
 	def __init__(self):
 		self.readdevices()
@@ -62,7 +62,7 @@ class dm(object):
 
 	def getmodules(self):
 		json = ''
-		for module in os.listdir('modules'):
+		for module in os.listdir('devicemodules'):
 			if module.endswith('.py'):
 				if len(json) > 0:
 					json += ','
@@ -96,7 +96,7 @@ class dm(object):
 	def viewcommand(self, deviceid, command, data):
 		d = self.devices[deviceid]
 		if d:
-			return d.viewcommand(command, data) or "{}"
+			return d.action(command, data) or "{}"
 		else:
 			return False
 

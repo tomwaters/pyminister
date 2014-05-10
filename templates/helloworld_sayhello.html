@@ -1,0 +1,26 @@
+<script>
+	$(document).ready(function() {
+		$("#helloworldbtn").on("click", function() {
+			$.ajax({
+				url: "/json/viewcommand",
+				type: "POST",
+				dataType: "text",
+				data: {
+					deviceid: deviceID,
+					command: "Say Hello",
+					data: ""
+				}
+			})
+			.done(function(data) {
+				$("#helloworldmsg").text(data);
+			})
+			.fail(function() {
+				alert("Failed to send command. Please try again.");
+			});
+		});
+	});
+</script>
+<div>
+	<input type="button" id="helloworldbtn" value="Say Hello" />
+	<span id="helloworldmsg"></span>
+</div>

@@ -9,7 +9,7 @@ class Mod(BD):
 		self.views.append(View('xbmc_remote', 'Remote'))
 		self.views.append(View('xbmc_nowplaying', 'Now Playing'))
 		
-	def viewcommand(self, command, data):
+	def action(self, command, data):
 		if 	command == 'remotecommand':
 			return self.sendcommand(data)
 		elif command == 'nowplaying':

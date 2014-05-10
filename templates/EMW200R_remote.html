@@ -15,18 +15,18 @@
 	$(document).ready(function() {
 		$(".rbutton").on("click", function() {
 			if($(this).data("rc") == "On")
-				command = "remoteon"
+				command = "Turn On"
 			else if($(this).data("rc") == "Off")
-				command = "remoteoff"
+				command = "Turn Off"
 				
 			$.ajax({
 				url: "/json/viewcommand",
 				type: "POST",
-				dataType: 'text',
+				dataType: "text",
 				data: {
 					deviceid: deviceID,
 					command: command,
-					data: ''
+					data: ""
 				}
 			})
 			.fail(function() {
@@ -42,5 +42,3 @@
 		<div class="rbutton" data-rc="Off">Off</div>
 	</div>
 </div>
-
-

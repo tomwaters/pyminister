@@ -3,10 +3,10 @@
 {% block head %}
 <script>
 $(document).ready(function() {
-	$("#settingstitlelbl").text(res.SETTINGS_TITLE);
-	$("#settingsadddevlbl").text(res.SETTINGS_DEVICE_ADD);
-	$("#selectdev").text(res.SETTINGS_DEVICE_SELECT);
-	$("#dlgname").text(res.SETTINGS_DLG_NAME);
+	$("#devicestitlelbl").text(res.DEVICES_TITLE);
+	$("#adddevlbl").text(res.DEVICES_DEVICE_ADD);
+	$("#selectdev").text(res.DEVICES_DEVICE_SELECT);
+	$("#dlgname").text(res.DEVICES_DLG_NAME);
 	getModules();
 	getDevices();
 });
@@ -48,7 +48,7 @@ function listDevice(type, id, name) {
 function addDeviceClick() {
 	if($("#modulelist").children("option:selected").index() >  0) {
 		var type = $("#modulelist").children("option:selected").val();
-		var title = res.SETTINGS_DLG_ADD + type + res.SETTINGS_DLG_ADDDEV;
+		var title = res.DEVICES_DLG_ADD + type + res.DEVICES_DLG_ADDDEV;
 		addeditDevice(title, type);
 	}
 }
@@ -57,7 +57,7 @@ function editDeviceClick() {
 	var url = "/json/devices/" + $(this).closest("li").val();
 	$.getJSON(url)
 	.done(function(data){
-		var title = res.SETTINGS_DLG_EDIT + data.name;
+		var title = res.DEVICES_DLG_EDIT + data.name;
 		addeditDevice(title, data.type, data.name, data.connectionstring);
 	})
 	.fail(function() {
@@ -157,7 +157,7 @@ function addeditOK() {
 </script>
 {% endblock %}
 {% block body %}
-	<h2 id="settingstitlelbl"></h2>
+	<h2 id="devicestitlelbl"></h2>
 	<div>
 		<span id="adddevlbl"></span>
 		<select id="modulelist">

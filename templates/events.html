@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script>
+$(document).ready(function() {
+	$("#eventstitlelbl").text(res.EVENTS_TITLE);
+});
+
+</script>
+{% endblock %}
+{% block body %}
+	<h2 id="eventstitlelbl"></h2>
+{% endblock %}

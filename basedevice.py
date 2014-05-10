@@ -1,6 +1,7 @@
 class BaseDevice(object):
 	def __init__(self, id, type, name, connectionString):
 		self.views = []
+		self.actions = []
 		self.id = id
 		self.type = type
 		self.name = name
@@ -35,4 +36,3 @@ class View(object):
 	def __init__(self, id, name):
 		self.id = id
 		self.name = name
-		
